@@ -2,7 +2,12 @@
 ckpts/
 m2svid_demo/
 outputs/
+inputs/
 demo_lowmem/
+experiments/clips/
+experiments/m2svid_benchmark/runs*/
+experiments/m2svid_benchmark/results*.csv
+experiments/m2svid_benchmark/figures/
 
 # Large model/data artifacts
 *.pt
