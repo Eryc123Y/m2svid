@@ -22,7 +22,7 @@ import ffmpeg
 from torchvision import transforms
 import torch
 import numpy as np
-import torchvision.io
+import imageio
 from omegaconf import OmegaConf
 from sgm.util import instantiate_from_config
 
@@ -97,7 +97,7 @@ def save_video(video, fps, path):
     frames = video.cpu().numpy().transpose(0, 2, 3, 4, 1)
     frames = np.concatenate(frames)
     frames = (((frames + 1) / 2).clip(0, 1) * 255).astype(np.uint8)
-    torchvision.io.write_video(path, frames, fps=int(fps), options={"crf": "17"})
+    imageio.mimwrite(path, frames, fps=int(fps), codec="libx264", quality=8, macro_block_size=1)
 
 
 sbs_video = torch.cat([input_video, generated_video], dim=-1)

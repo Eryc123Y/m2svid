@@ -1,2 +1,34 @@
+# M2SVid local/runtime artifacts
+ckpts/
+m2svid_demo/
+outputs/
+demo_lowmem/
+
+# Large model/data artifacts
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.zip
+*.npz
+
+# Python/cache
 __pycache__/
-.vscode
+*.py[cod]
+*.class
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Lightning/IDE/local state
+.cache/
+.config/
+.nv/
+.lightning_studio/
+.vscode/backups/
+.idea/
+
+# Backups/logs
+*.bak*
+*.log
