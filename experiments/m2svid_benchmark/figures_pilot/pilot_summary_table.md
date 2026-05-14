@@ -1,0 +1,10 @@
+| clip_id | status | t_total_sec | t_depthcrafter_sec | t_warping_sec | t_m2svid_sec | gpu_peak_memory_mib | processed_fps |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| close_object__bottle-detection | success | 55.37 | 18.05 | 3.91 | 33.27 | 24847.00 | 0.43 |
+| driving__car-detection | success | 55.04 | 17.82 | 3.91 | 33.16 | 24847.00 | 0.44 |
+| human_motion__people-detection | success | 54.92 | 17.90 | 3.80 | 33.06 | 24847.00 | 0.44 |
+| indoor_aisle__store-aisle-detection | success | 54.82 | 17.87 | 3.85 | 32.91 | 24847.00 | 0.44 |
+| indoor_classroom__classroom | success | 54.82 | 17.84 | 3.84 | 32.90 | 24847.00 | 0.44 |
+| mixed_motion__person-bicycle-car-detection | success | 54.76 | 17.83 | 3.84 | 32.94 | 24847.00 | 0.44 |
+| objects_texture__fruit-and-vegetable-detection | success | 54.97 | 17.88 | 3.88 | 33.04 | 24847.00 | 0.44 |
+| workspace__worker-zone-detection | success | 54.94 | 17.79 | 3.82 | 33.06 | 24847.00 | 0.44 |
