@@ -60,8 +60,23 @@ for f in experiments/clips/*.mp4; do
   ffprobe -v error -select_streams v:0 -show_entries stream=width,height,duration,r_frame_rate -of csv=p=0 "$f" || true
 done | tee experiments/m2svid_benchmark_clip_manifest.txt
 
+log "Checking Python environment"
+PYTHON_BIN="${M2SVID_PYTHON:-/home/zeus/miniconda3/envs/cloudspace/bin/python}"
+if [ ! -x "$PYTHON_BIN" ]; then
+  PYTHON_BIN="$(command -v python3)"
+fi
+"$PYTHON_BIN" - <<'PY'
+import sys
+print('python:', sys.executable)
+try:
+    import torch
+    print('torch:', torch.__version__, 'cuda:', torch.cuda.is_available())
+except Exception as e:
+    print('torch import error:', e)
+PY
+
 log "Checking Python scripts"
-python3 -m py_compile scripts/benchmark_m2svid.py scripts/analyze_m2svid_benchmark.py
+"$PYTHON_BIN" -m py_compile scripts/benchmark_m2svid.py scripts/analyze_m2svid_benchmark.py
 
 COMMON=(
   --input-dir experiments/clips
@@ -74,7 +89,7 @@ COMMON=(
 case "$MODE" in
   smoke)
     log "Running smoke benchmark: 1 clip, 8 frames, 384p-ish, 5 depth steps"
-    python3 scripts/benchmark_m2svid.py \
+    "$PYTHON_BIN" scripts/benchmark_m2svid.py \
       "${COMMON[@]}" \
       --output-dir experiments/m2svid_benchmark/runs_smoke \
       --max-res 384 \
@@ -84,7 +99,7 @@ case "$MODE" in
     ;;
   pilot)
     log "Running pilot benchmark: 8 clips, 24 frames, max_res 512"
-    python3 scripts/benchmark_m2svid.py \
+    "$PYTHON_BIN" scripts/benchmark_m2svid.py \
       "${COMMON[@]}" \
       --output-dir experiments/m2svid_benchmark/runs \
       --max-res 512 \
@@ -93,7 +108,7 @@ case "$MODE" in
     ;;
   scaling)
     log "Running scaling benchmark: first 3 clips × resolutions × frame counts"
-    python3 scripts/benchmark_m2svid.py \
+    "$PYTHON_BIN" scripts/benchmark_m2svid.py \
       "${COMMON[@]}" \
       --output-dir experiments/m2svid_benchmark/runs_scaling \
       --max-res 384,512,768 \
