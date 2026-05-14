@@ -265,6 +265,15 @@ def run_one(spec: RunSpec, repo_root: Path, run_dir: Path, args: argparse.Namesp
     depth_dir = run_dir / "depthcrafter"
     reprojected_dir = run_dir / "reprojected"
     m2svid_dir = run_dir / "m2svid"
+    # Make reruns idempotent. ffmpeg refuses to overwrite outputs created by
+    # previous failed/successful attempts, which otherwise causes BrokenPipeError
+    # in warping.py when its ffmpeg subprocess exits early.
+    for p in [input_video, reprojected_dir / "input_reprojected.mp4", reprojected_dir / "input_reprojected_mask.mp4"]:
+        if p.exists() or p.is_symlink():
+            p.unlink()
+    for d in [depth_dir, m2svid_dir]:
+        if d.exists():
+            shutil.rmtree(d)
     depth_dir.mkdir(exist_ok=True)
     reprojected_dir.mkdir(exist_ok=True)
     m2svid_dir.mkdir(exist_ok=True)
