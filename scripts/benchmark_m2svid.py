@@ -409,6 +409,7 @@ def main() -> int:
     ap.add_argument("--repo-root", type=Path, default=Path.cwd(), help="M2SVid repo root. Default: cwd")
     ap.add_argument("--input-dir", type=Path, required=True, help="Directory of input videos")
     ap.add_argument("--output-dir", type=Path, default=Path("experiments/m2svid_benchmark/runs"), help="Output runs directory")
+    ap.add_argument("--results-csv", type=Path, default=None, help="Aggregate CSV path. Default: <output-dir parent>/results_<output-dir name>.csv")
     ap.add_argument("--max-res", default="512", help="Comma-separated max resolutions, e.g. 384,512,768")
     ap.add_argument("--frames", default="24", help="Comma-separated frame counts after FPS normalization")
     ap.add_argument("--fps", type=float, default=8.0, help="Target FPS")
@@ -450,6 +451,9 @@ def main() -> int:
     print(f"Repo: {repo_root}")
     print(f"Clips: {len(clips)}; expanded runs: {len(specs)}")
     print(f"Output: {args.output_dir}")
+    if args.results_csv is None:
+        args.results_csv = args.output_dir.parent / f"results_{args.output_dir.name}.csv"
+    print(f"Results CSV: {args.results_csv}")
     print(f"Model config: {args.model_config}")
     if args.dry_run:
         for spec in specs:
@@ -464,12 +468,12 @@ def main() -> int:
         run_dir = args.output_dir / spec.run_id
         row = run_one(spec, repo_root, run_dir, args)
         all_rows.append(row)
-        append_results(args.output_dir.parent / "results.csv", all_rows)
+        append_results(args.results_csv, all_rows)
         if row.get("status") != "success":
             print(f"Run failed; continuing to next run. See {run_dir / 'metrics.json'}")
 
-    append_results(args.output_dir.parent / "results.csv", all_rows)
-    print(f"\nDone. Aggregate CSV: {args.output_dir.parent / 'results.csv'}")
+    append_results(args.results_csv, all_rows)
+    print(f"\nDone. Aggregate CSV: {args.results_csv}")
     successes = sum(1 for r in all_rows if r.get("status") == "success")
     print(f"Success: {successes}/{len(all_rows)}")
     return 0 if successes == len(all_rows) else 1
