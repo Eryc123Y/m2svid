@@ -18,7 +18,7 @@ Prepare 10-12 short clips under:
 experiments/clips/
 ```
 
-Each clip can be arbitrary length/resolution; the benchmark script normalizes to a fixed FPS, frame count, and max resolution.
+Each clip can be arbitrary length/resolution; the benchmark script normalizes to a fixed FPS, frame count, and square padded canvas (`max_res × max_res`). The square padding is intentional: M2SVid/Hi3D can fail on non-divisible/non-square shapes during U-Net skip concatenation.
 
 Run on Lightning from repo root:
 

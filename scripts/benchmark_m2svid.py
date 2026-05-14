@@ -237,10 +237,13 @@ def create_no_xformers_config(repo_root: Path, base_config: Path, out_config: Pa
 
 
 def preprocess_clip(src: Path, dst: Path, fps: float, frames: int, max_res: int, cwd: Path, log_path: Path) -> CommandResult:
-    # Keep aspect ratio, make dimensions even, cap max side to max_res.
+    # M2SVid/Hi3D U-Net expects spatial sizes that survive repeated down/up sampling.
+    # Preserve aspect ratio, then pad to a square max_res × max_res canvas. This avoids
+    # shape mismatches such as 216px height becoming 7 vs 8 at skip concatenation.
     vf = (
         f"fps={fps},"
-        f"scale='if(gt(iw,ih),{max_res},-2)':'if(gt(iw,ih),-2,{max_res})',"
+        f"scale='if(gt(a,1),{max_res},-2)':'if(gt(a,1),-2,{max_res})',"
+        f"pad={max_res}:{max_res}:(ow-iw)/2:(oh-ih)/2,"
         f"trim=end_frame={frames},setpts=PTS-STARTPTS"
     )
     cmd = [
